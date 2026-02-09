@@ -8,7 +8,7 @@ class game:
     def __init__(self,instance_id = 0, screen_width=800, screen_height=600):
         self.BOUND = 5 #meters 
         self.SCALE = 100 #scaling in pixels/meter
-        self.dt = 0.1 #s 
+        self.dt = 0.01 #s 
         self.t = 0 #s
 
         #pygame 
@@ -32,12 +32,15 @@ class game:
 
     def update(self):
         A = np.array([
-            [self.cart.CART_MASS+self.ball.BALL_MASS, -self.ball.BALL_MASS*self.ball.L*np.cos(self.ball.theta)],
+            [self.cart.CART_MASS+self.ball.BALL_MASS, self.ball.BALL_MASS*self.ball.L*np.cos(self.ball.theta)],
             [np.cos(self.ball.theta), self.ball.L]
             ])
         B = np.array([self.cart.F_in+self.ball.BALL_MASS*self.ball.omega**2*self.ball.L*np.sin(self.ball.theta), -self.cart.G*np.sin(self.ball.theta)])
         X = np.linalg.solve(A, B)
         a_c, alpha = X
+        alpha = -alpha
+        print(f"cart acc {a_c}")
+        print(f"angular acc {alpha}")
         self.cart.update(self.dt, a_c)
         self.ball.update(self.dt, alpha)
 
@@ -45,7 +48,7 @@ class game:
     def draw(self):
         self.screen.fill(self.BLACK)
         self.cart.draw(self.screen, self.SCALE, self.screen_width//2, self.screen_height//2)
-        self.ball.draw(self.screen, self.SCALE, self.screen_width//2, self.screen_height//2)
+        self.ball.draw(self.screen, self.SCALE, self.screen_width//2, self.screen_height//2, self.cart)
         self.stick.draw(self.screen, self.SCALE, self.screen_width//2, self.screen_height//2)
         pygame.display.flip()
 
@@ -74,23 +77,32 @@ class game:
 
 class cart:
     def __init__(self, x=0, length=1, color = (255,255,255)):
+
+        #parameters 
         self.CART_LENGTH = length #meters 
         self.CART_HEIGHT = 0.4 #meter
         self.CART_MASS = 5 #kg
         self.G = 10 #m/s^2
         self.CART_COLOR = color #rgb 
-        self.prev_x = x
+
+        #kinematics 
+        self.prev_x = x #m
         self.x,self.y = x,0 #m
-        self.F_in = 0.6 #N
+        self.F_in = 0 #N
+        self.v_x = 0 #m/s
         self.a_c = 0 #m/s^2 
+
     def update(self, dt, a_c):
-        self.x = 2*self.x-self.prev_x+a_c*(self.x)*dt**2
+        self.a_c = a_c
+        self.x += self.v_x*dt + 0.5*self.a_c*dt**2
+        self.v_x += self.a_c*dt
         self.prev_x = self.x
+
     def draw(self, screen, scale, offset_x, offset_y):
-        pygame.draw.rect(screen, self.CART_COLOR, (int(self.x*scale+offset_x-0.5*self.CART_LENGTH*scale), int(self.y*scale+offset_y), self.CART_LENGTH*scale, self.CART_HEIGHT*scale))
+        pygame.draw.rect(screen, self.CART_COLOR, (int(self.x*scale+offset_x-0.5*self.CART_LENGTH*scale), int(self.y*scale+offset_y-0.5*self.CART_HEIGHT*scale), self.CART_LENGTH*scale, self.CART_HEIGHT*scale))
 
 class ball:
-    def __init__(self, theta = 0.5, color = (255,255,255)):
+    def __init__(self, theta = 0.1, color = (255,255,255)):
         self.L = 1 #meters 
         self.BALL_MASS = 1 #kg
         self.G = 10 #m/s^2
@@ -101,13 +113,18 @@ class ball:
         self.omega = 0 #rad/s
         self.alpha = 0 #rad/s^2 
         self.x,self.y = self.L*np.sin(self.theta), self.L*np.cos(self.theta) 
+
     def update(self, dt, alpha):
-        self.theta = 2*self.theta-self.prev_theta+alpha*(self.theta)*dt**2
+        self.alpha = alpha 
+        self.theta += self.omega*dt + 0.5*self.alpha*dt**2 
         self.prev_theta = self.theta
-        self.omega += alpha*dt
+        self.omega += self.alpha*dt
         self.x,self.y = self.L*np.sin(self.theta), self.L*np.cos(self.theta)
-    def draw(self, screen, scale, offset_x, offset_y):
-        pygame.draw.circle(screen, self.COLOR, (int(self.x*scale+offset_x), int(-self.y*scale+offset_y)), self.radius*scale)
+
+    def draw(self, screen, scale, offset_x, offset_y, cart):
+        pygame.draw.circle(screen, self.COLOR, (int(self.x*scale+cart.x*scale+offset_x), int(-self.y*scale+offset_y)), self.radius*scale)
+        print(f"ball omega {self.omega}")
+        print(f"ball theta {self.theta}")
 
 class stick:
     def __init__(self, ball, cart, color=(255, 255, 255)):
@@ -119,7 +136,7 @@ class stick:
         cart_center_x = self.cart.x + self.cart.CART_LENGTH // 2
         cart_center_y = self.cart.y + self.cart.CART_HEIGHT // 2
 
-        pygame.draw.line(screen, self.color, (int(self.ball.x*scale+offset_x), int(-self.ball.y*scale+offset_y)), (int(cart_center_x*scale+offset_x), int(cart_center_y*scale+offset_y)), 5)
+        pygame.draw.line(screen, self.color, (int(self.ball.x*scale+self.cart.x*scale+offset_x), int(-self.ball.y*scale+offset_y)), (int(cart_center_x*scale+offset_x), int(cart_center_y*scale+offset_y)), 5)
 
 if __name__ == "__main__":
     my_game = game()
