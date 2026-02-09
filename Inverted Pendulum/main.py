@@ -86,7 +86,6 @@ class cart:
         self.CART_COLOR = color #rgb 
 
         #kinematics 
-        self.prev_x = x #m
         self.x,self.y = x,0 #m
         self.F_in = 0 #N
         self.v_x = 0 #m/s
@@ -94,9 +93,8 @@ class cart:
 
     def update(self, dt, a_c):
         self.a_c = a_c
-        self.x += self.v_x*dt + 0.5*self.a_c*dt**2
         self.v_x += self.a_c*dt
-        self.prev_x = self.x
+        self.x += self.v_x*dt
 
     def draw(self, screen, scale, offset_x, offset_y):
         pygame.draw.rect(screen, self.CART_COLOR, (int(self.x*scale+offset_x-0.5*self.CART_LENGTH*scale), int(self.y*scale+offset_y-0.5*self.CART_HEIGHT*scale), self.CART_LENGTH*scale, self.CART_HEIGHT*scale))
@@ -109,16 +107,14 @@ class ball:
         self.COLOR = color
         self.radius = 0.1 #meters
         self.theta = theta #rad  
-        self.prev_theta = theta
         self.omega = 0 #rad/s
         self.alpha = 0 #rad/s^2 
         self.x,self.y = self.L*np.sin(self.theta), self.L*np.cos(self.theta) 
 
     def update(self, dt, alpha):
         self.alpha = alpha 
-        self.theta += self.omega*dt + 0.5*self.alpha*dt**2 
-        self.prev_theta = self.theta
         self.omega += self.alpha*dt
+        self.theta += self.omega*dt 
         self.x,self.y = self.L*np.sin(self.theta), self.L*np.cos(self.theta)
 
     def draw(self, screen, scale, offset_x, offset_y, cart):
