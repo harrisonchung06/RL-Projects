@@ -6,12 +6,13 @@ import time
 
 class game:
     def __init__(self,instance_id = 0, screen_width=800, screen_height=600):
+        #parameters 
         self.BOUND = 5 #meters 
         self.SCALE = 100 #scaling in pixels/meter
         self.dt = 0.01 #s 
         self.t = 0 #s
 
-        #pygame 
+        #pygame setup
         pygame.init()
 
         self.instance_id = instance_id
@@ -39,8 +40,6 @@ class game:
         X = np.linalg.solve(A, B)
         a_c, alpha = X
         alpha = -alpha
-        print(f"cart acc {a_c}")
-        print(f"angular acc {alpha}")
         self.cart.update(self.dt, a_c)
         self.ball.update(self.dt, alpha)
 
@@ -57,6 +56,12 @@ class game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     return False
+                if event.key == pygame.K_RIGHT:
+                    self.cart.F_in += 1
+                    print(f"F {self.cart.F_in}")
+                if event.key == pygame.K_LEFT:
+                    self.cart.F_in -= 1
+                    print(f"F {self.cart.F_in}")
             elif event.type == pygame.QUIT:
                 return False
         return True
@@ -100,15 +105,17 @@ class cart:
         pygame.draw.rect(screen, self.CART_COLOR, (int(self.x*scale+offset_x-0.5*self.CART_LENGTH*scale), int(self.y*scale+offset_y-0.5*self.CART_HEIGHT*scale), self.CART_LENGTH*scale, self.CART_HEIGHT*scale))
 
 class ball:
-    def __init__(self, theta = 0.1, color = (255,255,255)):
+    def __init__(self, theta_start = 0.1, color = (255,255,255)):
+        #parameters 
         self.L = 1 #meters 
         self.BALL_MASS = 1 #kg
         self.G = 10 #m/s^2
         self.COLOR = color
         self.radius = 0.1 #meters
-        self.theta = theta #rad  
+        self.theta = theta_start #rad  
         self.omega = 0 #rad/s
         self.alpha = 0 #rad/s^2 
+
         self.x,self.y = self.L*np.sin(self.theta), self.L*np.cos(self.theta) 
 
     def update(self, dt, alpha):
@@ -119,8 +126,6 @@ class ball:
 
     def draw(self, screen, scale, offset_x, offset_y, cart):
         pygame.draw.circle(screen, self.COLOR, (int(self.x*scale+cart.x*scale+offset_x), int(-self.y*scale+offset_y)), self.radius*scale)
-        print(f"ball omega {self.omega}")
-        print(f"ball theta {self.theta}")
 
 class stick:
     def __init__(self, ball, cart, color=(255, 255, 255)):
