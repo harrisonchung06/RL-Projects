@@ -43,6 +43,9 @@ class game:
 
     def get_reward(self):
         return 1/(1-0.9*np.cos(self.ball.theta)) - 1/(self.cart.x**2*(self.cart.x-3)**2)
+    
+    def action(self, action):
+        self.cart.F += action
 
     def draw(self):
         self.screen.fill(self.BLACK)
@@ -58,29 +61,13 @@ class game:
                     return False
                 if event.key == pygame.K_RIGHT:
                     self.cart.F_in += 1
-                    print(f"F {self.cart.F_in}")
+                    #print(f"F {self.cart.F_in}")
                 if event.key == pygame.K_LEFT:
                     self.cart.F_in -= 1
-                    print(f"F {self.cart.F_in}")
+                    #print(f"F {self.cart.F_in}")
             elif event.type == pygame.QUIT:
                 return False
         return True
-
-    def run(self):
-        running = True
-        n = 0
-        while running:
-            self.t = n*self.dt
-            n+=1
-            print('Timestamp: {:.3}'.format(self.t))
-            print(f"ball t: {self.ball.theta}")
-            running = self.handle_events()
-            self.check_bounds()
-            self.update()
-            self.draw()
-            self.clock.tick(60)
-        pygame.quit()
-        sys.exit()
 
     def check_bounds(self):
         x = int(self.cart.x*self.SCALE+self.screen_width//2-0.5*self.cart.CART_LENGTH*self.SCALE)
