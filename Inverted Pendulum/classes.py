@@ -41,6 +41,8 @@ class game:
         self.cart.update(self.dt, a_c)
         self.ball.update(self.dt, alpha)
 
+    def get_reward(self):
+        return 1/(1-0.9*np.cos(self.ball.theta)) - 1/(self.cart.x**2*(self.cart.x-3)**2)
 
     def draw(self):
         self.screen.fill(self.BLACK)
@@ -71,7 +73,7 @@ class game:
             self.t = n*self.dt
             n+=1
             print('Timestamp: {:.3}'.format(self.t))
-            print(f"Cart Pos: {self.cart.x}")
+            print(f"ball t: {self.ball.theta}")
             running = self.handle_events()
             self.check_bounds()
             self.update()
@@ -82,8 +84,11 @@ class game:
 
     def check_bounds(self):
         x = int(self.cart.x*self.SCALE+self.screen_width//2-0.5*self.cart.CART_LENGTH*self.SCALE)
+        ball_y = int(-self.ball.y*self.SCALE+self.screen_height//2)
         if x <= 0 or x >= self.screen_width-self.cart.CART_LENGTH*self.SCALE:
             self.reset()
+        #elif ball_y >= self.screen_height//2:
+            #self.reset()
 
     def reset(self):
         self.t = 0
