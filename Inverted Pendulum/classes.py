@@ -42,10 +42,13 @@ class game:
         self.ball.update(self.dt, alpha)
 
     def get_reward(self):
-        return 1/(1-0.9*np.cos(self.ball.theta)) - 1/(self.cart.x**2*(self.cart.x-3)**2)
+        return 1/(1-0.9*np.cos(self.ball.theta)) - 1/(self.cart.x**2*(self.cart.x-4)**2)
+    
+    def get_params(self):
+        return [self.cart.x, self.cart.v_x, self.cart.a_c, self.ball.theta, self.ball.omega, self.ball.alpha]
     
     def action(self, action):
-        self.cart.F += action
+        self.cart.F_in += action
 
     def draw(self):
         self.screen.fill(self.BLACK)
@@ -59,11 +62,11 @@ class game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     return False
-                if event.key == pygame.K_RIGHT:
-                    self.cart.F_in += 1
+                #if event.key == pygame.K_RIGHT: #Manual inputs 
+                    #self.cart.F_in += 1
                     #print(f"F {self.cart.F_in}")
-                if event.key == pygame.K_LEFT:
-                    self.cart.F_in -= 1
+                #if event.key == pygame.K_LEFT:
+                    #self.cart.F_in -= 1
                     #print(f"F {self.cart.F_in}")
             elif event.type == pygame.QUIT:
                 return False

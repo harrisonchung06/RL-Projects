@@ -1,11 +1,11 @@
 import classes as cl
-import ai 
+import agents as a
 import time
 import pygame
 import sys
 
 if __name__ == "__main__":
-    my_ai = ai.ai(0,0,0,0,0,0)
+    my_ai = a.Random()
     my_game = cl.game()
     running = True
     n = 0
@@ -18,8 +18,15 @@ if __name__ == "__main__":
         my_game.check_bounds()
         my_game.update()
         my_game.draw()
+
+        params = my_game.get_params()
+        #print(f"Params {params}")
         reward = my_game.get_reward()
         print(f"Reward: {reward}")
+        action = my_ai.get_policy(params)
+        print(f"Action: {action}")
+        my_game.action(action)
+        
         my_game.clock.tick(60)
     pygame.quit()
     sys.exit()
