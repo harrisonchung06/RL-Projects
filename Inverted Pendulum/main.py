@@ -3,12 +3,15 @@ import agents as a
 import time
 import pygame
 import sys
+import utils
 
 if __name__ == "__main__":
-    my_ai = a.Random()
+    #my_ai = a.Random()
+    my_ai = a.Scale(1)
     my_game = cl.game()
     running = True
     n = 0
+    reward = 0
     while running:
         my_game.t = n*my_game.dt
         n+=1
@@ -20,7 +23,7 @@ if __name__ == "__main__":
         my_game.draw()
 
         params = my_game.get_params()
-        #print(f"Params {params}")
+        print(f"Params {params}")
         reward = my_game.get_reward()
         print(f"Reward: {reward}")
         action = my_ai.get_policy(params)
