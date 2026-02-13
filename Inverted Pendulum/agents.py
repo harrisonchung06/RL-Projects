@@ -3,7 +3,6 @@ import random
 import utils
 
 #No reinforcement:
-
 class Random:
     def __init__(self):
         self.params = []
@@ -11,18 +10,20 @@ class Random:
         self.reward = 0
     def get_policy(self, params):
         return random.randint(-1,1)
-    
+
+#Scaling Agent
 class Scale:
-    def __init__(self, cap):
-        self.cap = cap
+    def __init__(self, cap_min, cap_max):
+        self.cap_min = cap_min
+        self.cap_max = cap_max
         self.params = []
         self.action = 0
-        self.reward = []
-        self.step = 0.01
+        self.rewards = [0]
+        self.step = 0.1
         self.hyp = random.randint(0, 1)
     def get_policy(self, params):
         self.params = params
-        return utils.clamp(-self.params[3]*self.hyp, self.cap)
+        return utils.clamp(-self.params[3]*self.hyp, self.cap_min, self.cap_max)
     def reinforce(self, reward_curr):
         self.reward_prev = self.rewards[-1]
         self.rewards.append(reward_curr)

@@ -45,7 +45,7 @@ class game:
     def get_reward(self):
         angle_reward =  1/(1-0.9*np.cos(self.ball.theta)) 
         position_reward = - 1/(0.01*(self.cart.x+4.5)**2*(self.cart.x-4.5)**2)
-        position_reward = utils.clamp(position_reward, -20)
+        position_reward = utils.min_cap(position_reward, -20)
         return angle_reward + position_reward
 
     def get_params(self):
@@ -115,7 +115,7 @@ class cart:
         pygame.draw.rect(screen, self.CART_COLOR, (int(self.x*scale+offset_x-0.5*self.CART_LENGTH*scale), int(self.y*scale+offset_y-0.5*self.CART_HEIGHT*scale), self.CART_LENGTH*scale, self.CART_HEIGHT*scale))
 
 class ball:
-    def __init__(self, theta_start = 0, color = (255,255,255)):
+    def __init__(self, theta_start = 0.1, color = (255,255,255)):
         #parameters 
         self.L = 1 #meters 
         self.BALL_MASS = 1 #kg
