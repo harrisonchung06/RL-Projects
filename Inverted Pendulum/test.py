@@ -1,4 +1,11 @@
 import numpy as np
+#import matplotlib.pyplot as plt
+import utils
 
+for i in range(10):
+    y = np.random.random()
+    plt.scatter(i, y)
+    plt.plot(i,y)
+    plt.pause(0.05)
 
-print(1/(1-0.9*np.cos(0)))
+plt.show()

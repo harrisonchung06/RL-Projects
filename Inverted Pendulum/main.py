@@ -7,7 +7,7 @@ import utils
 
 if __name__ == "__main__":
     #my_ai = a.Random()
-    my_ai = a.Scale(-1, 1)
+    my_ai = a.Scale(0, 0)
     my_game = cl.game()
     running = True
     n = 0
@@ -32,7 +32,10 @@ if __name__ == "__main__":
 
         print(f"Action: {action}")
         my_game.action(action)
+
+        my_game.get_energy()
         
         my_game.clock.tick(60)
     pygame.quit()
+    my_game.plot_energy()
     sys.exit()

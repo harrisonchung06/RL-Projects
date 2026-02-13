@@ -30,6 +30,10 @@ class game:
         self.ball = ball()  
         self.stick = stick(self.ball, self.cart) 
 
+        #energy
+        self.e = []
+        self.ts = []
+
     def update(self):
         A = np.array([
             [self.cart.CART_MASS+self.ball.BALL_MASS, self.ball.BALL_MASS*self.ball.L*np.cos(self.ball.theta)],
@@ -51,6 +55,15 @@ class game:
     def get_params(self):
         return [self.cart.x, self.cart.v_x, self.cart.a_c, self.ball.theta, self.ball.omega, self.ball.alpha]
     
+    def get_energy(self):
+        p_e = self.ball.BALL_MASS*self.ball.G*(self.ball.L*np.cos(self.ball.theta)+self.ball.L)
+        k_e = 0.5*self.ball.BALL_MASS*self.ball.L**2*self.ball.omega**2+0.5*(self.ball.BALL_MASS+self.cart.CART_MASS)*self.cart.v_x
+        self.e.append(p_e+k_e)
+        self.ts.append(self.t)
+    
+    def plot_energy(self):
+        utils.plot(self.ts, self.e, "Energy Time Plot", "Time (s)", "Energy (J)")
+
     def action(self, action):
         self.cart.F_in += action
 
