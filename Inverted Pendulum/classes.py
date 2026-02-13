@@ -57,7 +57,7 @@ class game:
     
     def get_energy(self):
         p_e = self.ball.BALL_MASS*self.ball.G*(self.ball.L*np.cos(self.ball.theta)+self.ball.L)
-        k_e = 0.5*self.ball.BALL_MASS*self.ball.L**2*self.ball.omega**2+0.5*(self.ball.BALL_MASS+self.cart.CART_MASS)*self.cart.v_x
+        k_e = 0.5*self.ball.BALL_MASS*self.ball.L**2*self.ball.omega**2+0.5*(self.ball.BALL_MASS+self.cart.CART_MASS)*self.cart.v_x**2
         self.e.append(p_e+k_e)
         self.ts.append(self.t)
     

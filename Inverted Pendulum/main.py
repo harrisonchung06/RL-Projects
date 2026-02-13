@@ -7,7 +7,7 @@ import utils
 
 if __name__ == "__main__":
     #my_ai = a.Random()
-    my_ai = a.Scale(0, 0)
+    my_ai = a.Scale(0,0)
     my_game = cl.game()
     running = True
     n = 0
