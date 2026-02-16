@@ -7,14 +7,11 @@ import utils
 
 if __name__ == "__main__":
     #my_ai = a.Random()
-    my_ai = a.Linear(0,0)
+    my_ai = a.Linear(-3,3)
     my_game = cl.game()
     running = True
-    n = 0
     reward = 0
     while running:
-        my_game.t = n*my_game.dt
-        n+=1
         print('Timestamp: {:.3}'.format(my_game.t))
         #print(f"ball t: {self.ball.theta}")
         running = my_game.handle_events()
@@ -33,9 +30,9 @@ if __name__ == "__main__":
         print(f"Action: {action}")
         my_game.action(action)
 
-        my_game.get_energy()
+        #my_game.get_energy()
         
         my_game.clock.tick(60)
     pygame.quit()
-    my_game.plot_energy()
+    #my_game.plot_energy()
     sys.exit()

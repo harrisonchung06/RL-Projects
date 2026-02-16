@@ -8,8 +8,9 @@ class game:
         #parameters 
         self.BOUND = 5 #meters 
         self.SCALE = 100 #scaling in pixels/meter
-        self.dt = 0.001 #s 
-        self.t = 0 #s
+        self.dt = 0.02 #s 
+        self.t = float(0) #s
+        self.n = float(0) #iterations
 
         #pygame setup
         pygame.init()
@@ -44,6 +45,9 @@ class game:
         a_c, alpha = X
         self.cart.update(self.dt, a_c)
         self.ball.update(self.dt, alpha)
+
+        self.t = self.n*self.dt
+        self.n+=1
 
     def get_reward(self):
         angle_reward =  1/(1-0.9*np.cos(self.ball.theta)) 
@@ -97,6 +101,7 @@ class game:
             #self.reset()
 
     def reset(self):
+        self.n = 0
         self.t = 0
         self.cart = cart()     
         self.ball = ball()  
