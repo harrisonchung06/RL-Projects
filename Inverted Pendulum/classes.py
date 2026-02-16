@@ -8,7 +8,7 @@ class game:
         #parameters 
         self.BOUND = 5 #meters 
         self.SCALE = 100 #scaling in pixels/meter
-        self.dt = 0.01 #s 
+        self.dt = 0.001 #s 
         self.t = 0 #s
 
         #pygame setup
@@ -39,10 +39,9 @@ class game:
             [self.cart.CART_MASS+self.ball.BALL_MASS, self.ball.BALL_MASS*self.ball.L*np.cos(self.ball.theta)],
             [np.cos(self.ball.theta), self.ball.L]
             ])
-        B = np.array([self.cart.F_in+self.ball.BALL_MASS*self.ball.omega**2*self.ball.L*np.sin(self.ball.theta), -self.cart.G*np.sin(self.ball.theta)])
+        B = np.array([self.cart.F_in+self.ball.BALL_MASS*self.ball.omega**2*self.ball.L*np.sin(self.ball.theta), self.cart.G*np.sin(self.ball.theta)])
         X = np.linalg.solve(A, B)
         a_c, alpha = X
-        alpha = -alpha
         self.cart.update(self.dt, a_c)
         self.ball.update(self.dt, alpha)
 
@@ -56,8 +55,8 @@ class game:
         return [self.cart.x, self.cart.v_x, self.cart.a_c, self.ball.theta, self.ball.omega, self.ball.alpha]
     
     def get_energy(self):
-        p_e = self.ball.BALL_MASS*self.ball.G*(self.ball.L*np.cos(self.ball.theta)+self.ball.L)
-        k_e = 0.5*self.ball.BALL_MASS*self.ball.L**2*self.ball.omega**2+0.5*(self.ball.BALL_MASS+self.cart.CART_MASS)*self.cart.v_x**2
+        p_e = self.ball.BALL_MASS*self.ball.G*(self.ball.y)
+        k_e = 0.5*self.ball.BALL_MASS*((self.cart.v_x+self.ball.L*self.ball.omega*np.cos(self.ball.theta))**2+(self.ball.L*self.ball.omega*np.sin(self.ball.theta))**2)+0.5*self.cart.CART_MASS*self.cart.v_x**2
         self.e.append(p_e+k_e)
         self.ts.append(self.t)
     

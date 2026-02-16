@@ -11,8 +11,8 @@ class Random:
     def get_policy(self, params):
         return random.randint(-1,1)
 
-#Scaling Agent
-class Scale:
+#Linear Regression Agent
+class Linear:
     def __init__(self, cap_min, cap_max):
         self.cap_min = cap_min
         self.cap_max = cap_max
