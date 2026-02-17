@@ -8,7 +8,7 @@ class game:
         #parameters 
         self.BOUND = 5 #meters 
         self.SCALE = 100 #scaling in pixels/meter
-        self.dt = 0.02 #s 
+        self.dt = 0.01 #s 
         self.t = float(0) #s
         self.n = float(0) #iterations
 
